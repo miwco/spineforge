@@ -24,7 +24,7 @@ Commands:
 - `src/hooks/useAppState.ts` - app persistence, streaks, coins, progression, shop ownership/equips
 - `src/hooks/useWorkoutTimer.ts` - workout queue construction, interval timer, transition/switch/finish cues
 - `src/views/HomeView.tsx` - dashboard, start button, session length, streak repair/saver, calendar export
-- `src/views/WorkoutPlayerView.tsx` - fullscreen workout UI, countdown, picture, next step, controls, exit modal
+- `src/views/WorkoutPlayerView.tsx` - fullscreen workout UI, countdown, large picture/video media, next step, controls, exit modal
 - `src/views/CompletionView.tsx` - completion rewards screen and spark animation
 - `src/views/ExerciseInfoView.tsx` - exercise library, image thumbnails, expandable videos
 - `src/views/StatsView.tsx` - streak cards, monthly calendar, progression bars
@@ -51,7 +51,7 @@ Default flow:
 10. Transition Rest - 10 seconds, previews Glute Bridge
 11. Glute Bridge + Hip Mobility - 60 seconds plus progression
 
-The workout starts paused on the player screen. Pressing the round play button initializes audio and starts the timer. The timer advances automatically. The UI shows a large countdown, current exercise/rest label, exercise image or next-exercise preview, cue text, and next-up bar.
+The workout starts paused on the player screen. Pressing the round play button initializes audio and starts the timer. The timer advances automatically. The UI shows a compact countdown, current exercise/rest label, large media, one-line cue text, and next-up bar. Get-ready/rest/transition states show the next exercise picture as a large square preview. Active work states show the exercise demo video looping muted in a 16:9 frame.
 
 Audio/vibration behavior:
 - Start cue when the timer begins from the initial get-ready step
@@ -172,13 +172,13 @@ Current core videos:
 - `/video/Dead-bug-video.mp4`
 - `/video/glute-bridge-video.mp4`
 
-Workout exercise media should be displayed in a `16 / 9` frame with `object-fit: contain`. Some source exercise images are square JPEGs, but the UI should not force the media frame itself to be square. Library videos also use `aspect-ratio: 16 / 9` and `object-fit: contain`.
+Workout exercise media should prioritize readability on a phone. Square exercise pictures can use a large square preview frame during get-ready/rest/transition states. Active work states should loop the corresponding 16:9 exercise video muted with `object-fit: contain`. Library videos also use `aspect-ratio: 16 / 9` and `object-fit: contain`.
 
 ## Visual Theme and UX Guidance
 - Keep the app phone-first.
 - Preserve the dark steel and molten orange identity unless explicitly asked to redesign.
 - Avoid broad desktop layouts; desktop should continue to center the mobile shell.
-- Exercise images in the workout should remain square and inspectable.
+- Exercise pictures in workout previews should remain square, large, and inspectable; active exercise videos should be 16:9 and loop during the working interval.
 - Use existing CSS variables and component classes before introducing a new design system.
 - Be careful with inline styles: the current app uses many of them, but future cleanup should extract repeated card/button styles gradually.
 

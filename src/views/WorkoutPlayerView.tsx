@@ -46,6 +46,9 @@ export const WorkoutPlayerView: React.FC<WorkoutPlayerViewProps> = ({
   // Get active media assets (static JPEG image)
   const activeMedia = getExerciseMedia(currentStep.exerciseId);
   const nextMedia = nextStep ? getExerciseMedia(nextStep.exerciseId) : null;
+  const previewStep = currentStep.exerciseId ? currentStep : nextStep;
+  const previewMedia = currentStep.exerciseId ? activeMedia : nextMedia;
+  const showExerciseVideo = currentStep.type === 'work' && Boolean(currentStep.exerciseId);
 
   return (
     <div 
@@ -114,17 +117,25 @@ export const WorkoutPlayerView: React.FC<WorkoutPlayerViewProps> = ({
           {currentStep.type === 'rest' && nextStep ? `UP NEXT: ${nextStep.name}` : currentStep.name}
         </h2>
         
-        {/* Cinematic Photographic Image Frame */}
-        <div className={`exercise-image-frame ${currentStep.type === 'work' ? 'active' : ''}`}>
-          {currentStep.exerciseId ? (
-            <img src={activeMedia.image} alt={currentStep.name} />
-          ) : nextStep?.exerciseId && nextMedia ? (
-            <div style={{ position: 'relative', width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-              <img src={nextMedia.image} alt={nextStep.name} />
-              <div style={{ position: 'absolute', top: '10px', left: '10px', backgroundColor: 'rgba(243, 112, 33, 0.9)', padding: '2px 6px', borderRadius: '4px' }}>
-                <span style={{ fontSize: '0.65rem', color: '#000', fontWeight: '900', textTransform: 'uppercase' }}>PREVIEW</span>
+        <div className={`exercise-media-frame ${showExerciseVideo ? 'video-active' : 'image-preview'}`}>
+          {showExerciseVideo ? (
+            <video
+              key={`${currentStep.exerciseId}-${currentStep.name}`}
+              src={activeMedia.video}
+              poster={activeMedia.image}
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="metadata"
+            />
+          ) : previewStep?.exerciseId && previewMedia ? (
+            <>
+              <img src={previewMedia.image} alt={previewStep.name} />
+              <div className="exercise-media-badge">
+                <span>{currentStep.type === 'work' ? 'PICTURE' : 'PREVIEW'}</span>
               </div>
-            </div>
+            </>
           ) : (
             <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--primary)' }}>
               <HelpCircle size={40} />
