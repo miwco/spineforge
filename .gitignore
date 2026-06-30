@@ -24,7 +24,5 @@ dist-ssr
 *.sw?
 
 # Unused assets or generated stuff
-visual-inspiration/
-images/
-video/
+/visual-inspiration/
 .tempmediaStorage/
