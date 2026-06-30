@@ -1,0 +1,18 @@
+{
+  "name": "SpineForge Lower Back Maintenance",
+  "short_name": "SpineForge",
+  "description": "Daily 5-minute lower-back stability routine with progression and streaks.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0b10",
+  "theme_color": "#0a0b10",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
