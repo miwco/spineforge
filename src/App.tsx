@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { Home, BookOpen, BarChart3, ShoppingBag, ShieldAlert, Coins } from 'lucide-react';
 import { useAppState } from './hooks/useAppState';
 import { useWorkoutTimer } from './hooks/useWorkoutTimer';
@@ -15,10 +15,6 @@ import { SafetyView } from './views/SafetyView';
 
 type MainTab = 'home' | 'info' | 'stats' | 'shop' | 'safety';
 type ViewState = MainTab | 'player' | 'completion';
-
-const MAIN_TABS: MainTab[] = ['home', 'info', 'stats', 'shop', 'safety'];
-const SWIPE_THRESHOLD_PX = 60;
-const SWIPE_AXIS_LOCK_RATIO = 1.35;
 
 export const App: React.FC = () => {
   const {
@@ -39,7 +35,6 @@ export const App: React.FC = () => {
     newStreak: number;
     exerciseIncremented: string | null;
   } | null>(null);
-  const pointerStartRef = useRef<{ x: number; y: number } | null>(null);
 
   // Callback when workout finishes successfully
   const handleWorkoutComplete = () => {
@@ -100,39 +95,6 @@ export const App: React.FC = () => {
     }
   };
 
-  const switchTabBySwipe = (direction: 'previous' | 'next') => {
-    const currentIndex = MAIN_TABS.indexOf(activeView as MainTab);
-    if (currentIndex === -1) return;
-
-    const nextIndex = direction === 'next'
-      ? Math.min(currentIndex + 1, MAIN_TABS.length - 1)
-      : Math.max(currentIndex - 1, 0);
-
-    if (nextIndex !== currentIndex) {
-      setActiveView(MAIN_TABS[nextIndex]);
-    }
-  };
-
-  const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
-    pointerStartRef.current = { x: event.clientX, y: event.clientY };
-  };
-
-  const handlePointerUp = (event: React.PointerEvent<HTMLDivElement>) => {
-    const start = pointerStartRef.current;
-    pointerStartRef.current = null;
-    if (!start) return;
-
-    const deltaX = event.clientX - start.x;
-    const deltaY = event.clientY - start.y;
-    const isHorizontalSwipe =
-      Math.abs(deltaX) >= SWIPE_THRESHOLD_PX &&
-      Math.abs(deltaX) > Math.abs(deltaY) * SWIPE_AXIS_LOCK_RATIO;
-
-    if (!isHorizontalSwipe) return;
-
-    switchTabBySwipe(deltaX < 0 ? 'next' : 'previous');
-  };
-
   // Fullscreen player and completion screens bypass general shell layout
   if (activeView === 'player') {
     return (
@@ -170,11 +132,7 @@ export const App: React.FC = () => {
   }
 
   return (
-    <div
-      className="app-shell"
-      onPointerDown={handlePointerDown}
-      onPointerUp={handlePointerUp}
-    >
+    <>
       {/* Shell Header */}
       <header className="header-bar">
         <h2 style={{ fontSize: '1.2rem', fontWeight: '800', background: 'linear-gradient(135deg, var(--primary), var(--secondary))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
@@ -233,7 +191,7 @@ export const App: React.FC = () => {
           <span>Safety</span>
         </button>
       </nav>
-    </div>
+    </>
   );
 };
 

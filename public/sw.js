@@ -1,32 +1,54 @@
-const CACHE_NAME = 'spineforge-cache-v1';
+const CACHE_NAME = 'spineforge-cache-v2';
 
-// Install event - skip waiting to activate worker immediately
+const cacheResponse = async (request, response) => {
+  if (!response || response.status !== 200) {
+    return;
+  }
+
+  const cache = await caches.open(CACHE_NAME);
+  await cache.put(request, response.clone());
+};
+
 self.addEventListener('install', () => {
   self.skipWaiting();
 });
 
-// Activate event - clean up old caches
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((keys) => {
-      return Promise.all(
-        keys.map((key) => {
-          if (key !== CACHE_NAME) {
-            return caches.delete(key);
-          }
-        })
-      );
-    })
+    caches.keys()
+      .then((keys) => Promise.all(
+        keys.map((key) => (key === CACHE_NAME ? undefined : caches.delete(key)))
+      ))
+      .then(() => self.clients.claim())
   );
-  self.clients.claim();
 });
 
-// Fetch event - cache-first with network fallback and dynamic caching
+self.addEventListener('message', (event) => {
+  if (event.data?.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
+});
+
 self.addEventListener('fetch', (event) => {
   const request = event.request;
+  const url = new URL(request.url);
 
-  // Only handle GET requests from the same origin
-  if (request.method !== 'GET' || !request.url.startsWith(self.location.origin)) {
+  if (request.method !== 'GET' || url.origin !== self.location.origin) {
+    return;
+  }
+
+  if (request.mode === 'navigate' || request.destination === 'document') {
+    event.respondWith(
+      fetch(request)
+        .then((networkResponse) => {
+          cacheResponse(request, networkResponse);
+          return networkResponse;
+        })
+        .catch(async () => {
+          const cachedResponse = await caches.match(request);
+          return cachedResponse || caches.match('/');
+        })
+    );
     return;
   }
 
@@ -34,19 +56,10 @@ self.addEventListener('fetch', (event) => {
     caches.match(request).then((cachedResponse) => {
       const networkFetch = fetch(request)
         .then((networkResponse) => {
-          // Cache successful responses
-          if (networkResponse.status === 200) {
-            const cacheCopy = networkResponse.clone();
-            caches.open(CACHE_NAME).then((cache) => {
-              cache.put(request, cacheCopy);
-            });
-          }
+          cacheResponse(request, networkResponse);
           return networkResponse;
         })
-        .catch(() => {
-          // If network fails, return cached response
-          return cachedResponse || Response.error();
-        });
+        .catch(() => cachedResponse || Response.error());
 
       return cachedResponse || networkFetch;
     })
