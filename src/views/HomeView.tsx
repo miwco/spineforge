@@ -60,12 +60,13 @@ export const HomeView: React.FC<HomeViewProps> = ({
   return (
     <div className="fade-in scroll-container">
       {/* Cinematic Logo Header */}
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', margin: '20px 0 25px' }}>
-        <ForgeLogo size={130} />
-        <h1 style={{ marginTop: '15px', fontSize: '2.5rem', fontWeight: '900', letterSpacing: '0.04em', background: 'linear-gradient(135deg, #ffffff, #bdc3c7)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+      <div className="brand-hero">
+        <div className="brand-hero-backdrop" />
+        <ForgeLogo size={118} className="brand-hero-logo" />
+        <h1 className="brand-title">
           SPINEFORGE
         </h1>
-        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', justifyContent: 'center' }}>
+        <div className="brand-title-row">
           <span className="title-pill equipped" style={{ marginTop: '6px', fontSize: '0.75rem', padding: '4px 14px' }}>
             {state.activeTitle}
           </span>

@@ -49,7 +49,7 @@ export const WorkoutPlayerView: React.FC<WorkoutPlayerViewProps> = ({
 
   return (
     <div 
-      className="workout-fullscreen fade-in"
+      className="workout-fullscreen fullscreen-fade-in"
       style={{
         background: `radial-gradient(circle at 50% -20%, rgba(243, 112, 33, ${currentStep.type === 'rest' ? '0.07' : '0.15'}) 0%, #050508 70%)`,
         transition: 'background 0.5s ease'

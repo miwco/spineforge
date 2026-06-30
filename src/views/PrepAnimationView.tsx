@@ -45,7 +45,18 @@ export const PrepAnimationView: React.FC<PrepAnimationViewProps> = ({
   }, [isMuted]);
 
   return (
-    <div className="prep-fullscreen fade-in">
+    <div className="prep-fullscreen fullscreen-fade-in">
+      <video
+        className="prep-video-backdrop"
+        src={PREP_ANIMATION_SRC}
+        playsInline
+        autoPlay
+        muted
+        preload="auto"
+        aria-hidden="true"
+        tabIndex={-1}
+      />
+
       <video
         ref={videoRef}
         className="prep-video"

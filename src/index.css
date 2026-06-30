@@ -218,6 +218,84 @@ p {
   z-index: 2; /* Sit above volumetric light */
 }
 
+.brand-hero {
+  position: relative;
+  margin: 0.25rem -0.25rem 0.5rem;
+  min-height: 270px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 3.4rem 1.25rem 1.35rem;
+  overflow: hidden;
+  border: 1px solid rgba(243, 112, 33, 0.16);
+  border-radius: var(--radius-md);
+  background:
+    linear-gradient(180deg, rgba(5, 5, 8, 0.05), rgba(5, 5, 8, 0.95)),
+    radial-gradient(circle at 50% 42%, rgba(243, 112, 33, 0.2), transparent 60%),
+    #050508;
+  box-shadow: var(--shadow-lg), inset 0 0 30px rgba(243, 112, 33, 0.04);
+}
+
+.brand-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 42px 42px;
+  mask-image: linear-gradient(180deg, transparent, #000 22%, #000 70%, transparent);
+  opacity: 0.45;
+}
+
+.brand-hero-backdrop {
+  position: absolute;
+  inset: -38px -28px;
+  background-image: url('/brand/spineforge-logo.jpeg');
+  background-size: cover;
+  background-position: center;
+  filter: blur(18px) saturate(1.1) brightness(0.62);
+  opacity: 0.68;
+  transform: scale(1.08);
+}
+
+.brand-hero-backdrop::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 50% 45%, rgba(255, 132, 31, 0.12), transparent 42%),
+    linear-gradient(180deg, rgba(5, 5, 8, 0.08), rgba(5, 5, 8, 0.88));
+}
+
+.brand-hero-logo {
+  position: relative;
+  z-index: 2;
+}
+
+.brand-title {
+  position: relative;
+  z-index: 2;
+  margin-top: 0.85rem;
+  font-size: 2.55rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  background: linear-gradient(135deg, #ffffff, #d4dde2 48%, #f37021);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.brand-title-row {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
 .install-card {
   z-index: 3;
   margin: 1rem 1.25rem 0;
@@ -488,20 +566,33 @@ p {
   padding: 1.5rem;
 }
 
+.prep-video-backdrop {
+  position: absolute;
+  inset: -5%;
+  width: 110%;
+  height: 110%;
+  object-fit: cover;
+  filter: blur(20px) brightness(0.55) saturate(1.18);
+  transform: scale(1.08);
+  background-color: #050508;
+}
+
 .prep-video {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  background-color: #050508;
+  object-fit: contain;
+  background-color: transparent;
+  z-index: 2;
 }
 
 .prep-scrim {
   position: absolute;
   inset: 0;
+  z-index: 3;
   background:
-    linear-gradient(180deg, rgba(5, 5, 8, 0.08) 0%, rgba(5, 5, 8, 0.15) 36%, rgba(5, 5, 8, 0.92) 100%),
+    linear-gradient(180deg, rgba(5, 5, 8, 0.18) 0%, rgba(5, 5, 8, 0.04) 28%, rgba(5, 5, 8, 0.92) 100%),
     radial-gradient(circle at 50% 62%, rgba(243, 112, 33, 0.18), transparent 58%);
 }
 
@@ -927,7 +1018,16 @@ p {
   animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+.fullscreen-fade-in {
+  animation: fullscreenFadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(12px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fullscreenFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
