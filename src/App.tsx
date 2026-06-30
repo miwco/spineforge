@@ -12,9 +12,10 @@ import { ExerciseInfoView } from './views/ExerciseInfoView';
 import { StatsView } from './views/StatsView';
 import { ShopView } from './views/ShopView';
 import { SafetyView } from './views/SafetyView';
+import { PrepAnimationView } from './views/PrepAnimationView';
 
 type MainTab = 'home' | 'info' | 'stats' | 'shop' | 'safety';
-type ViewState = MainTab | 'player' | 'completion';
+type ViewState = MainTab | 'prep' | 'player' | 'completion';
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
@@ -40,6 +41,7 @@ export const App: React.FC = () => {
   const [activeView, setActiveView] = useState<ViewState>('home');
   const [installPromptEvent, setInstallPromptEvent] = useState<BeforeInstallPromptEvent | null>(null);
   const [isInstalled, setIsInstalled] = useState(false);
+  const [shouldAutoStartWorkout, setShouldAutoStartWorkout] = useState(false);
   
   // Results captured from completing a workout to pass to the completion screen
   const [workoutResult, setWorkoutResult] = useState<{
@@ -99,13 +101,24 @@ export const App: React.FC = () => {
     activeView
   );
 
+  useEffect(() => {
+    if (activeView !== 'player' || !shouldAutoStartWorkout) return;
+
+    const autoStart = window.setTimeout(() => {
+      timer.startTimer();
+      setShouldAutoStartWorkout(false);
+    }, 0);
+
+    return () => window.clearTimeout(autoStart);
+  }, [activeView, shouldAutoStartWorkout, timer]);
+
   const renderActiveView = () => {
     switch (activeView) {
       case 'home':
         return (
           <HomeView
             state={state}
-            onStartWorkout={() => setActiveView('player')}
+            onStartWorkout={() => setActiveView('prep')}
             repairStreak={repairStreak}
             checkStreakRepairAvailable={checkStreakRepairAvailable}
             buyStreakSaver={buyStreakSaver}
@@ -157,6 +170,23 @@ export const App: React.FC = () => {
         totalDurationRemaining={timer.totalDurationRemaining}
         onExit={() => {
           timer.resetTimer();
+          setShouldAutoStartWorkout(false);
+          setActiveView('home');
+        }}
+      />
+    );
+  }
+
+  if (activeView === 'prep') {
+    return (
+      <PrepAnimationView
+        onComplete={() => {
+          setShouldAutoStartWorkout(true);
+          setActiveView('player');
+        }}
+        onExit={() => {
+          timer.resetTimer();
+          setShouldAutoStartWorkout(false);
           setActiveView('home');
         }}
       />

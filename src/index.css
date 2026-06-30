@@ -471,6 +471,107 @@ p {
   z-index: 1;
 }
 
+.prep-fullscreen {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 480px;
+  height: 100vh;
+  overflow: hidden;
+  background-color: #050508;
+  z-index: 220;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 1.5rem;
+}
+
+.prep-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background-color: #050508;
+}
+
+.prep-scrim {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(5, 5, 8, 0.08) 0%, rgba(5, 5, 8, 0.15) 36%, rgba(5, 5, 8, 0.92) 100%),
+    radial-gradient(circle at 50% 62%, rgba(243, 112, 33, 0.18), transparent 58%);
+}
+
+.prep-topbar {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  right: 1rem;
+  z-index: 5;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.prep-icon-button {
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-primary);
+  background: rgba(5, 5, 8, 0.52);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: var(--radius-sm);
+  backdrop-filter: blur(10px);
+}
+
+.prep-icon-button.danger {
+  color: #ff6b57;
+  border-color: rgba(255, 107, 87, 0.25);
+}
+
+.prep-content {
+  position: relative;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.prep-content h1 {
+  font-size: 2.35rem;
+  line-height: 0.95;
+  color: #ffffff;
+}
+
+.prep-content p {
+  max-width: 320px;
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+}
+
+.prep-kicker {
+  font-family: var(--font-heading);
+  font-size: 0.82rem !important;
+  font-weight: 700;
+  color: var(--primary) !important;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.prep-skip-button {
+  position: relative;
+  z-index: 4;
+  width: min(100%, 340px);
+  align-self: center;
+  margin-bottom: calc(env(safe-area-inset-bottom) + 1rem);
+}
+
 .workout-header {
   display: flex;
   justify-content: space-between;
