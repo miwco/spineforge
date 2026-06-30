@@ -109,7 +109,7 @@ export const WorkoutPlayerView: React.FC<WorkoutPlayerViewProps> = ({
       </div>
 
       {/* Active Exercise Photographic Display */}
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '15px', justifyContent: 'center', zIndex: 10 }}>
+      <div className="workout-main-display">
         <h2 className="timer-exercise-name" style={{ color: currentStep.type === 'rest' ? '#ffa200' : 'var(--text-primary)', letterSpacing: '0.02em' }}>
           {currentStep.type === 'rest' && nextStep ? `UP NEXT: ${nextStep.name}` : currentStep.name}
         </h2>
@@ -138,7 +138,7 @@ export const WorkoutPlayerView: React.FC<WorkoutPlayerViewProps> = ({
       </div>
 
       {/* Heavy Controls Panel */}
-      <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', width: '100%', margin: '20px 0', zIndex: 10 }}>
+      <div className="workout-controls">
         <button 
           onClick={resetTimer} 
           className="btn btn-secondary" 

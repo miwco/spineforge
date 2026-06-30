@@ -60,16 +60,7 @@ export const CompletionView: React.FC<CompletionViewProps> = ({
 
   return (
     <div 
-      className="workout-fullscreen fade-in" 
-      style={{ 
-        display: 'flex', 
-        flexDirection: 'column', 
-        alignItems: 'center', 
-        justifyContent: 'center', 
-        textAlign: 'center', 
-        overflow: 'hidden',
-        background: 'radial-gradient(circle at 50% 50%, rgba(243, 112, 33, 0.1) 0%, #050508 80%)'
-      }}
+      className="completion-fullscreen fullscreen-fade-in"
     >
       {/* Floating Orange Forge Sparks */}
       {particles.map((p) => (
@@ -103,23 +94,23 @@ export const CompletionView: React.FC<CompletionViewProps> = ({
         }
       `}</style>
 
-      <div style={{ zIndex: 10, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '25px', maxWidth: '350px' }}>
+      <div className="completion-content">
         {/* Anvil Spine Logo Header */}
-        <div style={{ position: 'relative' }}>
-          <ForgeLogo size={140} />
+        <div className="completion-logo">
+          <ForgeLogo size={108} />
         </div>
 
-        <h1 style={{ fontSize: '2.4rem', fontWeight: '900', letterSpacing: '0.04em', background: 'linear-gradient(135deg, #ffffff, var(--primary))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', textShadow: '0 0 20px rgba(243,112,33,0.3)' }}>
+        <h1 className="completion-title">
           WELD COMPLETED
         </h1>
 
-        <p style={{ fontSize: '0.95rem', fontStyle: 'italic', color: 'var(--text-secondary)', lineHeight: '1.4' }}>
+        <p className="completion-quote">
           "{quote}"
         </p>
 
         {/* Steel Plate Rewards Card */}
-        <div className="glass-card" style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '14px', padding: '1.5rem', borderLeftColor: 'var(--primary)' }}>
-          <div style={{ display: 'flex', justifySelf: 'stretch', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div className="glass-card completion-card">
+          <div className="completion-row">
             <span style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-secondary)', fontWeight: '700', fontSize: '0.8rem', letterSpacing: '0.05em' }}>
               <Coins size={16} color="var(--primary)" />
               COINS FORGED:
@@ -129,7 +120,7 @@ export const CompletionView: React.FC<CompletionViewProps> = ({
             </span>
           </div>
 
-          <div style={{ display: 'flex', justifySelf: 'stretch', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div className="completion-row">
             <span style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-secondary)', fontWeight: '700', fontSize: '0.8rem', letterSpacing: '0.05em' }}>
               <Flame size={16} color="var(--primary)" />
               STREAK RETAINED:

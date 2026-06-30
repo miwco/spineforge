@@ -529,12 +529,15 @@ p {
   transform: translateX(-50%);
   width: 100%;
   max-width: 480px;
-  height: 100vh;
+  height: 100dvh;
+  min-height: 100vh;
   background-color: var(--bg-primary);
   z-index: 200;
   display: flex;
   flex-direction: column;
   padding: 1.5rem;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .workout-fullscreen::before {
@@ -753,11 +756,31 @@ p {
   z-index: 10;
 }
 
+.workout-main-display {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  justify-content: center;
+  z-index: 10;
+}
+
+.workout-controls {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+  margin: 20px 0;
+  z-index: 10;
+}
+
 /* Exercise Image Frame in Workout Player */
 .exercise-image-frame {
   width: 100%;
-  max-width: 240px;
-  aspect-ratio: 1 / 1;
+  max-width: 340px;
+  aspect-ratio: 16 / 9;
   border-radius: var(--radius-md);
   border: 1px solid rgba(255, 255, 255, 0.05);
   box-shadow: inset 0 0 10px rgba(0,0,0,0.8), var(--shadow-md);
@@ -779,6 +802,140 @@ p {
 .exercise-image-frame.active {
   border-color: var(--primary);
   box-shadow: var(--shadow-lg), 0 0 15px var(--primary-glow);
+}
+
+.completion-fullscreen {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 480px;
+  height: 100dvh;
+  min-height: 100vh;
+  z-index: 220;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: calc(env(safe-area-inset-top) + 1rem) 1.25rem calc(env(safe-area-inset-bottom) + 1.25rem);
+  text-align: center;
+  background: radial-gradient(circle at 50% 22%, rgba(243, 112, 33, 0.14) 0%, #050508 78%);
+}
+
+.completion-content {
+  z-index: 10;
+  width: 100%;
+  max-width: 350px;
+  min-height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 2.25rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin: 0 auto;
+}
+
+.completion-logo {
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.completion-title {
+  font-size: clamp(2rem, 11vw, 2.4rem);
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  background: linear-gradient(135deg, #ffffff, var(--primary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 20px rgba(243,112,33,0.3);
+}
+
+.completion-quote {
+  font-size: 0.9rem;
+  font-style: italic;
+  color: var(--text-secondary);
+  line-height: 1.35;
+}
+
+.completion-card {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  padding: 1.15rem;
+  border-left-color: var(--primary);
+}
+
+.completion-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+@media (max-height: 720px) {
+  .workout-fullscreen {
+    padding: 0.85rem 1rem;
+  }
+
+  .workout-header {
+    margin-bottom: 0.45rem;
+  }
+
+  .timer-circle-container {
+    flex: 0 0 auto;
+    margin: 0.15rem 0 0.45rem;
+  }
+
+  .timer-svg {
+    width: 170px;
+    height: 170px;
+  }
+
+  .timer-number {
+    font-size: 4rem;
+  }
+
+  .workout-main-display {
+    flex: 0 0 auto;
+    gap: 0.55rem;
+    justify-content: flex-start;
+  }
+
+  .timer-exercise-name {
+    font-size: 1.35rem;
+    margin-bottom: 0;
+  }
+
+  .exercise-image-frame {
+    max-width: 310px;
+  }
+
+  .timer-exercise-cues {
+    font-size: 0.82rem;
+    line-height: 1.25;
+    padding: 8px 12px;
+  }
+
+  .workout-controls {
+    margin: 0.75rem 0;
+  }
+
+  .timer-next-bar {
+    padding: 9px 12px;
+  }
+
+  .completion-content {
+    justify-content: flex-start;
+    gap: 0.85rem;
+  }
+
+  .completion-logo img {
+    width: 88px !important;
+    height: 88px !important;
+  }
 }
 
 /* Media Demo Player in Library details */

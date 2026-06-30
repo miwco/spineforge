@@ -172,7 +172,7 @@ Current core videos:
 - `/video/Dead-bug-video.mp4`
 - `/video/glute-bridge-video.mp4`
 
-Workout images are displayed in a square `aspect-ratio: 1 / 1` frame with `object-fit: contain`, preserving the original 1:1 exercise art. Library videos use `aspect-ratio: 16 / 9` and `object-fit: contain`.
+Workout exercise media should be displayed in a `16 / 9` frame with `object-fit: contain`. Some source exercise images are square JPEGs, but the UI should not force the media frame itself to be square. Library videos also use `aspect-ratio: 16 / 9` and `object-fit: contain`.
 
 ## Visual Theme and UX Guidance
 - Keep the app phone-first.
