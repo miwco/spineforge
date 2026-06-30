@@ -156,6 +156,13 @@ body {
   z-index: 1;
 }
 
+.app-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  touch-action: pan-y;
+}
+
 @media (max-width: 480px) {
   #root {
     border-left: none;

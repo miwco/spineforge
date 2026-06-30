@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Flame, Coins, Play, AlertTriangle, Calendar, Bell, Shield } from 'lucide-react';
+import { Flame, Coins, Play, AlertTriangle, Shield } from 'lucide-react';
 import { getLocalDateString } from '../hooks/useAppState';
 import type { AppState } from '../hooks/useAppState';
 import { ForgeLogo } from '../components/ForgeLogo';
@@ -55,33 +55,6 @@ export const HomeView: React.FC<HomeViewProps> = ({
     const mins = Math.floor(sec / 60);
     const remainder = sec % 60;
     return remainder > 0 ? `${mins}M ${remainder}S` : `${mins} MIN`;
-  };
-
-  const handleGenerateICS = () => {
-    const icsContent = [
-      'BEGIN:VCALENDAR',
-      'VERSION:2.0',
-      'PRODID:-//SpineForge//Daily Reminder//EN',
-      'BEGIN:VEVENT',
-      'UID:daily-spineforge-reminder@spineforge.app',
-      'SEQUENCE:0',
-      'DTSTAMP:20260101T000000Z',
-      'DTSTART;VALUE=DATE-TIME:20260628T200000',
-      'RRULE:FREQ=DAILY',
-      'SUMMARY:SpineForge Daily Back Routine',
-      'DESCRIPTION:Time to do your 5-minute lower-back routine. Keep your spine strong!',
-      'DURATION:PT5M',
-      'END:VEVENT',
-      'END:VCALENDAR'
-    ].join('\r\n');
-
-    const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = 'spineforge_reminder.ics';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
   };
 
   return (
@@ -227,24 +200,6 @@ export const HomeView: React.FC<HomeViewProps> = ({
         </button>
       </div>
 
-      {/* Calendar Alert Exporter Card */}
-      <div className="glass-card" style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-        <Bell size={36} color="var(--primary)" style={{ flexShrink: 0, filter: 'drop-shadow(0 0 6px var(--primary-glow))' }} />
-        <div style={{ textAlign: 'left' }}>
-          <h4 style={{ fontWeight: '700', fontSize: '0.95rem', letterSpacing: '0.02em', color: 'var(--text-primary)' }}>DAILY ALERTS</h4>
-          <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '8px', lineHeight: '1.3' }}>
-            Export a recurring calendar reminder at 20:00 to keep your spine on schedule.
-          </p>
-          <button 
-            onClick={handleGenerateICS} 
-            className="btn btn-secondary" 
-            style={{ width: 'auto', padding: '6px 12px', fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: '6px' }}
-          >
-            <Calendar size={12} />
-            EXPORT ALERTS
-          </button>
-        </div>
-      </div>
     </div>
   );
 };
