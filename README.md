@@ -1,32 +1,178 @@
-# React + TypeScript + Vite
+# SpineForge
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+SpineForge is a phone-first, gamified daily back-maintenance workout app. It guides a short lower-back stability routine, tracks consistency locally, and rewards repeat use with streaks, coins, micro-progression, and cosmetic unlocks.
 
-Currently, two official plugins are available:
+The app is built for the small daily habit: open it, press start, follow the timer, and keep the streak alive.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## What It Does
 
-## React Compiler
+- Runs a guided daily back routine with automatic timers.
+- Shows the current exercise, countdown, movement image, cue text, and next exercise.
+- Uses 10-second transition periods so the user can prepare for the next movement.
+- Plays synthesized beep cues and uses device vibration where supported.
+- Tracks completed days, current streak, longest streak, coins, and progression.
+- Adds gentle +1 second micro-progression after each completed day.
+- Includes a shop for themes, sound packs, titles, badges, animations, routines, and relic-style rewards.
+- Stores all user data locally in the browser for now.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Core Routine
 
-## Expanding the Oxlint configuration
+The default SpineForge session is about 5 minutes of exercise plus short transitions.
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+1. Hip hinge wall taps
+2. Bird dog
+3. Side plank
+   - 30 seconds left side
+   - 30 seconds right side
+   - side-switch cue between sides
+4. Dead bug
+5. Glute bridge + hip mobility
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+During transitions, the workout screen previews the next movement so the user can get into position before the work interval begins.
+
+## Exercise Media
+
+The app uses square exercise images in the workout player and demo videos in the exercise library.
+
+| Movement | Image | Demo video |
+| --- | --- | --- |
+| Hip hinge wall taps | ![Hip hinge wall taps](public/images/1.hip-hinge-wall-taps.jpeg) | [MP4](public/video/hip-hinge-wall-taps-video.mp4) |
+| Bird dog | ![Bird dog](public/images/2.bird-dog.jpeg) | [MP4](public/video/bird-dog-video.mp4) |
+| Side plank | ![Side plank](public/images/3.side-plank.jpeg) | [MP4](public/video/side-plank_video.mp4) |
+| Dead bug | ![Dead bug](public/images/4.dead-bug.jpeg) | [MP4](public/video/Dead-bug-video.mp4) |
+| Glute bridge + hip mobility | ![Glute bridge](public/images/5.glute-bridge.jpeg) | [MP4](public/video/glute-bridge-video.mp4) |
+
+## Progression
+
+SpineForge uses gentle automatic micro-progression:
+
+- Each first completed workout of the day adds +1 second to one exercise for the next session.
+- The app rotates which exercise receives the extra second.
+- Each exercise is capped at +30 seconds.
+- Side plank progression is split across left and right sides.
+- The Home and Stats views show the current daily target time.
+
+## Streaks, Coins, and Rewards
+
+Completing workouts earns coins and protects the user's streak.
+
+Current economy:
+
+- 10 coins for the first workout completion of a day.
+- 7-day streak milestone bonus starts at 50 coins.
+- Later 7-day milestones scale upward by +10 coins each week.
+- Streak repair costs 150 coins.
+- Streak saver/rest day costs 200 coins.
+
+The shop contains unlockable:
+
+- Visual themes
+- Sound packs
+- Dashboard badges
+- Completion animations
+- Titles/ranks
+- Alternative routine blueprints
+- Long-term relic rewards
+
+Rewards are intentionally priced so they require consistency instead of being unlocked instantly.
+
+## Local-Only Data
+
+SpineForge currently has no backend, accounts, or cloud sync. Browser data is stored with `localStorage`.
+
+Main storage keys:
+
+- `spineforge_state` - app state, streaks, coins, progression, cosmetics
+- `spineforge_active_routine` - selected routine blueprint
+
+Clearing browser site data will reset progress.
+
+## Project Structure
+
+```text
+src/
+  App.tsx                    App shell, tab navigation, player/completion routing
+  hooks/
+    useAppState.ts           Local state, streaks, coins, progression, shop logic
+    useWorkoutTimer.ts       Workout queue, countdown, transition and cue logic
+  views/
+    HomeView.tsx             Dashboard, start button, streak repair/saver, alert export
+    WorkoutPlayerView.tsx    Fullscreen guided workout
+    CompletionView.tsx       Rewards and completion screen
+    ExerciseInfoView.tsx     Exercise library with images/videos
+    StatsView.tsx            Calendar and progression stats
+    ShopView.tsx             Rewards shop and routine unlocks
+    SafetyView.tsx           Safety guidance
+  utils/
+    assets.ts                Exercise image/video path mapping
+    audioSynth.ts            Web Audio sound packs
+public/
+  images/                    Exercise images
+  video/                     Exercise demo videos
+  manifest.json              PWA manifest
+  sw.js                      Service worker
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+## Run Locally
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Start the development server:
+
+```bash
+npm run dev
+```
+
+Build for production:
+
+```bash
+npm run build
+```
+
+Preview the production build:
+
+```bash
+npm run preview
+```
+
+Run lint checks:
+
+```bash
+npm run lint
+```
+
+## Deployment
+
+This repository is intended to deploy through Vercel from GitHub.
+
+Current setup:
+
+- Framework: Vite
+- Build command: `npm run build`
+- Output directory: `dist`
+- No custom `vercel.json` is required at the moment.
+
+Typical flow:
+
+1. Commit changes.
+2. Push to GitHub.
+3. Vercel detects the push.
+4. Vercel runs the Vite build and deploys `dist`.
+
+Before pushing, run `npm run build` to keep the GitHub-to-Vercel deployment path clean.
+
+## Design Direction
+
+SpineForge uses a "Forged in the Dark" identity: black steel, molten orange, heavy typography, glowing edges, compact mobile cards, and a centered phone-sized shell on desktop. Future UI work should keep the app practical, readable, and phone-first while strengthening that forge/gym identity.
+
+## Notes for Future Work
+
+- Separate real workout dates from repaired/rest-saver dates for cleaner stats.
+- Move active routine selection into the main app state.
+- Add tests for streak calculation, repair cooldowns, progression rotation, and once-per-day rewards.
+- Finish mismatched shop items whose runtime behavior is incomplete.
+- Improve service worker cache update behavior if production users see stale deploys.
