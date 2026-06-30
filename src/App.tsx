@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Home, BookOpen, BarChart3, ShoppingBag, ShieldAlert, Coins } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { Home, BookOpen, BarChart3, ShoppingBag, ShieldAlert, Coins, Download, Smartphone } from 'lucide-react';
 import { useAppState } from './hooks/useAppState';
 import { useWorkoutTimer } from './hooks/useWorkoutTimer';
 import type { SoundPack } from './utils/audioSynth';
@@ -16,6 +16,16 @@ import { SafetyView } from './views/SafetyView';
 type MainTab = 'home' | 'info' | 'stats' | 'shop' | 'safety';
 type ViewState = MainTab | 'player' | 'completion';
 
+interface BeforeInstallPromptEvent extends Event {
+  prompt: () => Promise<void>;
+  userChoice: Promise<{ outcome: 'accepted' | 'dismissed'; platform: string }>;
+}
+
+const isRunningStandalone = () => {
+  const navigatorWithStandalone = window.navigator as Navigator & { standalone?: boolean };
+  return window.matchMedia('(display-mode: standalone)').matches || navigatorWithStandalone.standalone === true;
+};
+
 export const App: React.FC = () => {
   const {
     state,
@@ -28,6 +38,8 @@ export const App: React.FC = () => {
   } = useAppState();
 
   const [activeView, setActiveView] = useState<ViewState>('home');
+  const [installPromptEvent, setInstallPromptEvent] = useState<BeforeInstallPromptEvent | null>(null);
+  const [isInstalled, setIsInstalled] = useState(false);
   
   // Results captured from completing a workout to pass to the completion screen
   const [workoutResult, setWorkoutResult] = useState<{
@@ -35,6 +47,29 @@ export const App: React.FC = () => {
     newStreak: number;
     exerciseIncremented: string | null;
   } | null>(null);
+
+  useEffect(() => {
+    setIsInstalled(isRunningStandalone());
+
+    const handleBeforeInstallPrompt = (event: Event) => {
+      event.preventDefault();
+      setInstallPromptEvent(event as BeforeInstallPromptEvent);
+      setIsInstalled(false);
+    };
+
+    const handleAppInstalled = () => {
+      setInstallPromptEvent(null);
+      setIsInstalled(true);
+    };
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    window.addEventListener('appinstalled', handleAppInstalled);
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+      window.removeEventListener('appinstalled', handleAppInstalled);
+    };
+  }, []);
 
   // Callback when workout finishes successfully
   const handleWorkoutComplete = () => {
@@ -95,6 +130,17 @@ export const App: React.FC = () => {
     }
   };
 
+  const handleInstallApp = async () => {
+    if (!installPromptEvent) return;
+
+    await installPromptEvent.prompt();
+    const choice = await installPromptEvent.userChoice;
+    if (choice.outcome !== 'dismissed') {
+      setIsInstalled(true);
+    }
+    setInstallPromptEvent(null);
+  };
+
   // Fullscreen player and completion screens bypass general shell layout
   if (activeView === 'player') {
     return (
@@ -145,6 +191,31 @@ export const App: React.FC = () => {
           <span>{state.coins}</span>
         </div>
       </header>
+
+      {!isInstalled && (
+        <section className="install-card" aria-label="Install SpineForge app">
+          <div className="install-card-icon">
+            <Smartphone size={24} />
+          </div>
+          <div className="install-card-copy">
+            <h3>Install SpineForge</h3>
+            <p>
+              Browser mode is only a backup. Add SpineForge to your home screen for daily training and cleaner PWA updates.
+            </p>
+            {!installPromptEvent && (
+              <p className="install-card-hint">
+                iPhone: tap Share, then Add to Home Screen. Android: use the browser menu and choose Install app.
+              </p>
+            )}
+          </div>
+          {installPromptEvent && (
+            <button className="btn btn-primary install-card-button" onClick={handleInstallApp}>
+              <Download size={16} />
+              Install
+            </button>
+          )}
+        </section>
+      )}
 
       {/* Main View Scroll Area */}
       {renderActiveView()}
