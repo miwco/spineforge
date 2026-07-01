@@ -48,13 +48,14 @@ Default flow:
 4. Bird Dog - 60 seconds plus progression
 5. Transition Rest - 10 seconds, previews Side Plank Left
 6. Side Plank Left - 30 seconds plus half of side-plank progression
-7. Side Plank Right - 30 seconds plus the other half of side-plank progression
-8. Transition Rest - 10 seconds, previews Dead Bug
-9. Dead Bug - 60 seconds plus progression
-10. Transition Rest - 10 seconds, previews Glute Bridge
-11. Glute Bridge - 60 seconds plus progression
+7. Switch Sides - 5 seconds, previews Side Plank Right
+8. Side Plank Right - 30 seconds plus the other half of side-plank progression
+9. Transition Rest - 10 seconds, previews Dead Bug
+10. Dead Bug - 60 seconds plus progression
+11. Transition Rest - 10 seconds, previews Glute Bridge
+12. Glute Bridge - 60 seconds plus progression
 
-The workout starts paused on the player screen. Pressing the round play button initializes audio and starts the timer. The timer advances automatically. The UI shows a compact countdown, current exercise/rest label, large media, one-line cue text, and next-up bar. Get-ready/rest/transition states show the next exercise picture as a large square preview. Active work states show the exercise demo video looping muted in a 16:9 frame.
+The workout starts paused on the player screen. Pressing the round play button initializes audio and starts the timer. The timer advances automatically. The UI shows a compact countdown, current exercise/rest label, large media, one-line cue text, and next-up bar. The next-up bar scans past rest steps and always names the next work exercise. Get-ready/rest/transition states show the next exercise picture as a large square preview. Active work states show the exercise demo video looping muted in a 16:9 frame.
 
 Audio/vibration behavior:
 - Start cue when the timer begins from the initial get-ready step
@@ -72,10 +73,10 @@ Alternative routines:
 Progression lives in `state.progression` in `src/hooks/useAppState.ts`.
 
 Current rules:
-- The first completion of a local calendar day creates one pending progression point.
-- On the completion screen, the user chooses which exercise receives +1 second for the next workout.
-- `pendingProgression` persists the unallocated point and reward summary in `spineforge_state`; if the PWA closes before selection, it reopens on the completion screen.
-- Each exercise progression is capped at +30 seconds.
+- The first completion of a local calendar day creates two pending progression seconds.
+- On the completion screen, the user allocates them one second at a time; both may go to the same exercise.
+- `pendingProgression.secondsRemaining` persists unallocated seconds and the reward summary in `spineforge_state`; if the PWA closes before selection, it reopens on the completion screen. Legacy pending rewards without this field migrate to one remaining second.
+- Each exercise progression is capped at +30 seconds, making its maximum work duration 90 seconds. Side plank uses the same 90-second cap across both sides combined.
 - Side plank progression is split between left and right sides.
 - Home and Stats show total daily target as 300 base seconds plus total progression seconds. This does not include the initial 8-second get-ready step or transition rests.
 
@@ -202,7 +203,7 @@ Before pushing deployable changes, run:
 - `npm run lint` when relevant
 
 Service worker warning:
-- `public/sw.js` uses a cache-first strategy for same-origin GET requests and a manual cache name (`spineforge-cache-v7`). Bump this cache name for every user-facing deployment so installed PWAs activate the new shell and remove old caches.
+- `public/sw.js` uses a cache-first strategy for same-origin GET requests and a manual cache name (`spineforge-cache-v8`). Bump this cache name for every user-facing deployment so installed PWAs activate the new shell and remove old caches.
 
 ## Known Fragile Areas
 - README was previously the default Vite README; keep it product-specific.

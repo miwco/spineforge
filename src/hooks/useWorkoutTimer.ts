@@ -133,6 +133,14 @@ const buildWorkoutQueue = (progression: Progression): WorkoutStep[] => {
       exerciseId: 'side-plank',
       nextName: 'Switch Side: Side Plank (Right)'
     });
+
+    queue.push({
+      type: 'rest',
+      name: 'Switch Sides',
+      duration: 5,
+      cue: 'Turn over and set your right elbow under your shoulder',
+      nextName: 'Side Plank (Right)'
+    });
     
     // 3b. Side plank Right
     queue.push({
@@ -215,7 +223,9 @@ export const useWorkoutTimer = (
   }, [progression, activeView]);
 
   const currentStep = queue.current[currentStepIndex] || null;
-  const nextStep = queue.current[currentStepIndex + 1] || null;
+  const nextStep = queue.current
+    .slice(currentStepIndex + 1)
+    .find((step) => step.type === 'work') || null;
 
   const totalDuration = currentStep ? currentStep.duration : 1;
   const progressPercent = currentStep
@@ -280,7 +290,7 @@ export const useWorkoutTimer = (
               
               if (
                 currentStep?.name.includes('Left Side') &&
-                next.name.includes('Right Side')
+                next.name === 'Switch Sides'
               ) {
                 audioSynth.play(soundPack, 'switchSides');
                 vibrate([100, 100, 100]);

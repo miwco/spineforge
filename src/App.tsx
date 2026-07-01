@@ -51,14 +51,14 @@ export const App: React.FC = () => {
     progressionBonusCoins: number;
     newStreak: number;
     exerciseIncremented: keyof Progression | null;
-    canAllocateProgression: boolean;
+    progressionSecondsRemaining: number;
   } | null>(() => state.pendingProgression
     ? {
         coinsEarned: state.pendingProgression.coinsEarned,
         progressionBonusCoins: state.pendingProgression.progressionBonusCoins,
         newStreak: state.pendingProgression.newStreak,
         exerciseIncremented: null,
-        canAllocateProgression: true,
+        progressionSecondsRemaining: state.pendingProgression.secondsRemaining,
       }
     : null);
 
@@ -94,7 +94,7 @@ export const App: React.FC = () => {
         progressionBonusCoins: res.progressionBonusCoins ?? 0,
         newStreak: res.newStreak ?? 0,
         exerciseIncremented: null,
-        canAllocateProgression: res.canAllocateProgression ?? false,
+        progressionSecondsRemaining: res.progressionSecondsAvailable ?? 0,
       });
     } else {
       // If worked out twice in a day, give default screen results but no new coins
@@ -103,7 +103,7 @@ export const App: React.FC = () => {
         progressionBonusCoins: 0,
         newStreak: state.streakCurrent,
         exerciseIncremented: null,
-        canAllocateProgression: false,
+        progressionSecondsRemaining: 0,
       });
     }
     setActiveView('completion');
@@ -217,12 +217,16 @@ export const App: React.FC = () => {
         newStreak={workoutResult.newStreak}
         exerciseIncremented={workoutResult.exerciseIncremented}
         progression={state.progression}
-        canAllocateProgression={workoutResult.canAllocateProgression}
+        progressionSecondsRemaining={workoutResult.progressionSecondsRemaining}
         onAllocateProgression={(key: keyof Progression) => {
           const result = allocateProgression(key);
           if (result.success) {
             setWorkoutResult((current) => current
-              ? { ...current, exerciseIncremented: key, canAllocateProgression: false }
+              ? {
+                  ...current,
+                  exerciseIncremented: key,
+                  progressionSecondsRemaining: result.secondsRemaining ?? 0,
+                }
               : current);
           }
           return result;

@@ -49,6 +49,7 @@ export const WorkoutPlayerView: React.FC<WorkoutPlayerViewProps> = ({
   const previewStep = currentStep.exerciseId ? currentStep : nextStep;
   const previewMedia = currentStep.exerciseId ? activeMedia : nextMedia;
   const showExerciseVideo = currentStep.type === 'work' && Boolean(currentStep.exerciseId);
+  const isSideSwitch = currentStep.name === 'Switch Sides';
 
   return (
     <div 
@@ -104,7 +105,7 @@ export const WorkoutPlayerView: React.FC<WorkoutPlayerViewProps> = ({
         
         <div className="timer-text-container">
           <span style={{ fontSize: '0.75rem', fontWeight: '800', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
-            {currentStep.type === 'get-ready' ? 'GET READY' : currentStep.type === 'rest' ? 'REST' : 'ENGAGED'}
+            {currentStep.type === 'get-ready' ? 'GET READY' : isSideSwitch ? 'SWITCH' : currentStep.type === 'rest' ? 'REST' : 'ENGAGED'}
           </span>
           <span className="timer-number">{secondsRemaining}</span>
           <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>seconds</span>
@@ -114,7 +115,11 @@ export const WorkoutPlayerView: React.FC<WorkoutPlayerViewProps> = ({
       {/* Active Exercise Photographic Display */}
       <div className="workout-main-display">
         <h2 className="timer-exercise-name" style={{ color: currentStep.type === 'rest' ? '#ffa200' : 'var(--text-primary)', letterSpacing: '0.02em' }}>
-          {currentStep.type === 'rest' && nextStep ? `UP NEXT: ${nextStep.name}` : currentStep.name}
+          {isSideSwitch && nextStep
+            ? `SWITCH TO ${nextStep.name}`
+            : currentStep.type === 'rest' && nextStep
+              ? `UP NEXT: ${nextStep.name}`
+              : currentStep.name}
         </h2>
         
         <div className={`exercise-media-frame ${showExerciseVideo ? 'video-active' : 'image-preview'}`}>

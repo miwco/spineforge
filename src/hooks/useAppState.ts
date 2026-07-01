@@ -8,11 +8,15 @@ export interface Progression {
   'glute-bridge': number; // 0 to 30
 }
 
+export const MAX_PROGRESSION_SECONDS = 30;
+export const DAILY_PROGRESSION_SECONDS = 2;
+
 export interface PendingProgression {
   date: string;
   coinsEarned: number;
   progressionBonusCoins: number;
   newStreak: number;
+  secondsRemaining: number;
 }
 
 export interface AppState {
@@ -138,9 +142,20 @@ export const useAppState = () => {
         const parsed = JSON.parse(saved);
         // Ensure streaks are calculated fresh on load
         const streaks = calculateStreak(parsed.completedDates || []);
+        const pendingProgression = parsed.pendingProgression
+          ? {
+              ...parsed.pendingProgression,
+              secondsRemaining: parsed.pendingProgression.secondsRemaining ?? 1,
+            }
+          : null;
         return {
           ...DEFAULT_STATE,
           ...parsed,
+          progression: {
+            ...DEFAULT_STATE.progression,
+            ...parsed.progression,
+          },
+          pendingProgression,
           unlockedCosmetics: parsed.unlockedCosmetics || DEFAULT_STATE.unlockedCosmetics,
           activeBadge: parsed.activeBadge || DEFAULT_STATE.activeBadge,
           activeAnimation: parsed.activeAnimation || DEFAULT_STATE.activeAnimation,
@@ -174,6 +189,11 @@ export const useAppState = () => {
     const { current: newStreak, longest: newLongest } = calculateStreak(newCompletedDates);
 
     const progressionBonusCoins = Object.values(state.progression).reduce((sum, seconds) => sum + seconds, 0);
+    const availableProgressionSeconds = EXERCISE_KEYS.reduce(
+      (total, key) => total + Math.max(0, MAX_PROGRESSION_SECONDS - state.progression[key]),
+      0,
+    );
+    const progressionSecondsAvailable = Math.min(DAILY_PROGRESSION_SECONDS, availableProgressionSeconds);
     let coinsEarned = 10 + progressionBonusCoins;
     
     // New logic: 50 extra coins if you get a 7-day streak, 
@@ -191,12 +211,13 @@ export const useAppState = () => {
       streakLongest: Math.max(prev.streakLongest, newLongest),
       coins: prev.coins + coinsEarned,
       lastWorkoutDate: todayStr,
-      pendingProgression: EXERCISE_KEYS.some((key) => prev.progression[key] < 30)
+      pendingProgression: progressionSecondsAvailable > 0
         ? {
             date: todayStr,
             coinsEarned,
             progressionBonusCoins,
             newStreak,
+            secondsRemaining: progressionSecondsAvailable,
           }
         : null,
     }));
@@ -206,23 +227,27 @@ export const useAppState = () => {
       coinsEarned,
       progressionBonusCoins,
       newStreak,
-      canAllocateProgression: EXERCISE_KEYS.some((key) => state.progression[key] < 30),
+      progressionSecondsAvailable,
     };
   };
 
-  const allocateProgression = (key: keyof Progression): { success: boolean; error?: string } => {
+  const allocateProgression = (key: keyof Progression): { success: boolean; secondsRemaining?: number; error?: string } => {
     if (!state.pendingProgression) {
       return { success: false, error: 'No progression point is waiting to be allocated.' };
     }
     if (!EXERCISE_KEYS.includes(key)) {
       return { success: false, error: 'Unknown exercise.' };
     }
-    if (state.progression[key] >= 30) {
+    if (state.progression[key] >= MAX_PROGRESSION_SECONDS) {
       return { success: false, error: 'This exercise is already at its progression cap.' };
     }
 
+    const secondsRemaining = Math.max(0, state.pendingProgression.secondsRemaining - 1);
+
     setState((prev) => {
-      if (!prev.pendingProgression || prev.progression[key] >= 30) return prev;
+      if (!prev.pendingProgression || prev.progression[key] >= MAX_PROGRESSION_SECONDS) return prev;
+
+      const nextSecondsRemaining = Math.max(0, prev.pendingProgression.secondsRemaining - 1);
 
       return {
         ...prev,
@@ -230,11 +255,13 @@ export const useAppState = () => {
           ...prev.progression,
           [key]: prev.progression[key] + 1,
         },
-        pendingProgression: null,
+        pendingProgression: nextSecondsRemaining > 0
+          ? { ...prev.pendingProgression, secondsRemaining: nextSecondsRemaining }
+          : null,
       };
     });
 
-    return { success: true };
+    return { success: true, secondsRemaining };
   };
 
   const checkStreakRepairAvailable = (): {

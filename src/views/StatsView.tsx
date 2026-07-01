@@ -1,6 +1,6 @@
 import React from 'react';
 import { Calendar, Flame, Trophy, Clock } from 'lucide-react';
-import { getLocalDateString, EXERCISE_KEYS } from '../hooks/useAppState';
+import { getLocalDateString, EXERCISE_KEYS, MAX_PROGRESSION_SECONDS } from '../hooks/useAppState';
 import type { AppState } from '../hooks/useAppState';
 
 interface StatsViewProps {
@@ -133,7 +133,7 @@ export const StatsView: React.FC<StatsViewProps> = ({ state }) => {
             const added = state.progression[key] || 0;
             const base = 60;
             const total = base + added;
-            const progressPercent = (added / 30) * 100;
+            const progressPercent = (added / MAX_PROGRESSION_SECONDS) * 100;
             
             return (
               <div key={key} style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>

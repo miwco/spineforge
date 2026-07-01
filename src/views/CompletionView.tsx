@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Coins, Flame, ArrowRight, Activity, Plus, Check } from 'lucide-react';
 import { ForgeLogo } from '../components/ForgeLogo';
-import { EXERCISE_KEYS } from '../hooks/useAppState';
+import { EXERCISE_KEYS, MAX_PROGRESSION_SECONDS } from '../hooks/useAppState';
 import type { Progression } from '../hooks/useAppState';
 
 interface CompletionViewProps {
@@ -10,8 +10,8 @@ interface CompletionViewProps {
   newStreak: number;
   exerciseIncremented: keyof Progression | null;
   progression: Progression;
-  canAllocateProgression: boolean;
-  onAllocateProgression: (key: keyof Progression) => { success: boolean; error?: string };
+  progressionSecondsRemaining: number;
+  onAllocateProgression: (key: keyof Progression) => { success: boolean; secondsRemaining?: number; error?: string };
   onReturnHome: () => void;
 }
 
@@ -40,7 +40,7 @@ export const CompletionView: React.FC<CompletionViewProps> = ({
   newStreak,
   exerciseIncremented,
   progression,
-  canAllocateProgression,
+  progressionSecondsRemaining,
   onAllocateProgression,
   onReturnHome,
 }) => {
@@ -153,19 +153,21 @@ export const CompletionView: React.FC<CompletionViewProps> = ({
 
         </div>
 
-        {canAllocateProgression && (
+        {progressionSecondsRemaining > 0 && (
           <section className="progression-allocation" aria-labelledby="progression-heading">
             <div className="progression-allocation-heading">
               <Activity size={18} />
               <div>
-                <h2 id="progression-heading">Choose Your +1 Second</h2>
-                <p>Add it to your next workout. Complete that extra second to earn one extra coin.</p>
+                <h2 id="progression-heading">
+                  {progressionSecondsRemaining === 2 ? 'Choose Your +2 Seconds' : 'Choose 1 More Second'}
+                </h2>
+                <p>Allocate one second at a time. Both can go to the same movement. Each extra second completed earns one coin.</p>
               </div>
             </div>
 
             <div className="progression-options">
               {EXERCISE_KEYS.map((key) => {
-                const isAtCap = progression[key] >= 30;
+                const isAtCap = progression[key] >= MAX_PROGRESSION_SECONDS;
                 return (
                   <button
                     key={key}
@@ -177,7 +179,7 @@ export const CompletionView: React.FC<CompletionViewProps> = ({
                   >
                     <span>
                       <strong>{EXERCISE_NAMES[key]}</strong>
-                      <small>{isAtCap ? 'MAX +30S' : `CURRENT +${progression[key]}S`}</small>
+                      <small>{isAtCap ? 'MAX 1:30' : `${60 + progression[key]}S / 1:30 MAX`}</small>
                     </span>
                     <Plus size={20} aria-hidden="true" />
                   </button>
@@ -192,12 +194,15 @@ export const CompletionView: React.FC<CompletionViewProps> = ({
         {exerciseIncremented && (
           <div className="progression-confirmed" role="status">
             <Check size={18} />
-            <p><strong>{EXERCISE_NAMES[exerciseIncremented]}</strong> gets +1 second next workout.</p>
+            <p>
+              <strong>{EXERCISE_NAMES[exerciseIncremented]}</strong> gets +1 second next workout.
+              {progressionSecondsRemaining > 0 ? ` ${progressionSecondsRemaining} second left to allocate.` : ''}
+            </p>
           </div>
         )}
 
         {/* Back Button */}
-        {!canAllocateProgression && (
+        {progressionSecondsRemaining === 0 && (
           <button className="btn btn-primary" onClick={onReturnHome} style={{ gap: '10px', marginTop: '5px' }}>
             <span>RETURN TO HOME</span>
             <ArrowRight size={18} />

@@ -10,7 +10,7 @@ SpineForge is a phone-first PWA for building a consistent daily back-maintenance
 
 1. Hip hinge wall taps
 2. Bird dog
-3. Side plank - 30 seconds per side
+3. Side plank - 30 seconds per side with a 5-second side switch
 4. Dead bug
 5. Glute bridge
 
@@ -29,7 +29,8 @@ The workout advances automatically. Transition screens show the next movement, a
 ## Progress And Rewards
 
 - Completing the daily workout maintains the streak and earns coins.
-- Each completed day lets the user add one second to a chosen exercise.
+- Each completed day lets the user allocate two extra seconds across the exercises.
+- A movement tops out at 1 minute 30 seconds.
 - Every extra second completed earns one additional coin.
 - Coins unlock cosmetic themes, sounds, titles, badges, and rewards.
 
