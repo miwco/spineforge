@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Home, BookOpen, BarChart3, ShoppingBag, ShieldAlert, Coins, Download, Smartphone } from 'lucide-react';
 import { useAppState } from './hooks/useAppState';
+import type { Progression } from './hooks/useAppState';
 import { useWorkoutTimer } from './hooks/useWorkoutTimer';
 import type { SoundPack } from './utils/audioSynth';
 
@@ -31,6 +32,7 @@ export const App: React.FC = () => {
   const {
     state,
     completeWorkout,
+    allocateProgression,
     checkStreakRepairAvailable,
     repairStreak,
     buyStreakSaver,
@@ -38,7 +40,7 @@ export const App: React.FC = () => {
     equipCosmetic,
   } = useAppState();
 
-  const [activeView, setActiveView] = useState<ViewState>('home');
+  const [activeView, setActiveView] = useState<ViewState>(() => state.pendingProgression ? 'completion' : 'home');
   const [installPromptEvent, setInstallPromptEvent] = useState<BeforeInstallPromptEvent | null>(null);
   const [isInstalled, setIsInstalled] = useState(false);
   const [shouldAutoStartWorkout, setShouldAutoStartWorkout] = useState(false);
@@ -46,9 +48,19 @@ export const App: React.FC = () => {
   // Results captured from completing a workout to pass to the completion screen
   const [workoutResult, setWorkoutResult] = useState<{
     coinsEarned: number;
+    progressionBonusCoins: number;
     newStreak: number;
-    exerciseIncremented: string | null;
-  } | null>(null);
+    exerciseIncremented: keyof Progression | null;
+    canAllocateProgression: boolean;
+  } | null>(() => state.pendingProgression
+    ? {
+        coinsEarned: state.pendingProgression.coinsEarned,
+        progressionBonusCoins: state.pendingProgression.progressionBonusCoins,
+        newStreak: state.pendingProgression.newStreak,
+        exerciseIncremented: null,
+        canAllocateProgression: true,
+      }
+    : null);
 
   useEffect(() => {
     setIsInstalled(isRunningStandalone());
@@ -78,16 +90,20 @@ export const App: React.FC = () => {
     const res = completeWorkout();
     if (res.success) {
       setWorkoutResult({
-        coinsEarned: res.coinsEarned || 10,
-        newStreak: res.newStreak || 0,
-        exerciseIncremented: res.exerciseIncremented || null,
+        coinsEarned: res.coinsEarned ?? 10,
+        progressionBonusCoins: res.progressionBonusCoins ?? 0,
+        newStreak: res.newStreak ?? 0,
+        exerciseIncremented: null,
+        canAllocateProgression: res.canAllocateProgression ?? false,
       });
     } else {
       // If worked out twice in a day, give default screen results but no new coins
       setWorkoutResult({
         coinsEarned: 0,
+        progressionBonusCoins: 0,
         newStreak: state.streakCurrent,
         exerciseIncremented: null,
+        canAllocateProgression: false,
       });
     }
     setActiveView('completion');
@@ -197,8 +213,20 @@ export const App: React.FC = () => {
     return (
       <CompletionView
         coinsEarned={workoutResult.coinsEarned}
+        progressionBonusCoins={workoutResult.progressionBonusCoins}
         newStreak={workoutResult.newStreak}
         exerciseIncremented={workoutResult.exerciseIncremented}
+        progression={state.progression}
+        canAllocateProgression={workoutResult.canAllocateProgression}
+        onAllocateProgression={(key: keyof Progression) => {
+          const result = allocateProgression(key);
+          if (result.success) {
+            setWorkoutResult((current) => current
+              ? { ...current, exerciseIncremented: key, canAllocateProgression: false }
+              : current);
+          }
+          return result;
+        }}
         onReturnHome={() => {
           setWorkoutResult(null);
           setActiveView('home');

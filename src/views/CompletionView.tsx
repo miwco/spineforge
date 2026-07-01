@@ -1,13 +1,27 @@
 import React, { useEffect, useState } from 'react';
-import { Coins, Flame, ArrowRight, Activity } from 'lucide-react';
+import { Coins, Flame, ArrowRight, Activity, Plus, Check } from 'lucide-react';
 import { ForgeLogo } from '../components/ForgeLogo';
+import { EXERCISE_KEYS } from '../hooks/useAppState';
+import type { Progression } from '../hooks/useAppState';
 
 interface CompletionViewProps {
   coinsEarned: number;
+  progressionBonusCoins: number;
   newStreak: number;
-  exerciseIncremented: string | null;
+  exerciseIncremented: keyof Progression | null;
+  progression: Progression;
+  canAllocateProgression: boolean;
+  onAllocateProgression: (key: keyof Progression) => { success: boolean; error?: string };
   onReturnHome: () => void;
 }
+
+const EXERCISE_NAMES: Record<keyof Progression, string> = {
+  'hip-hinge': 'Hip Hinge Wall Taps',
+  'bird-dog': 'Bird Dog',
+  'side-plank': 'Side Plank',
+  'dead-bug': 'Dead Bug',
+  'glute-bridge': 'Glute Bridge + Hip Mobility',
+};
 
 const FUN_QUOTES = [
   "Spinal stabilization locked. The forge burns bright.",
@@ -22,11 +36,16 @@ const FUN_QUOTES = [
 
 export const CompletionView: React.FC<CompletionViewProps> = ({
   coinsEarned,
+  progressionBonusCoins,
   newStreak,
   exerciseIncremented,
+  progression,
+  canAllocateProgression,
+  onAllocateProgression,
   onReturnHome,
 }) => {
   const [quote, setQuote] = useState("");
+  const [allocationError, setAllocationError] = useState<string | null>(null);
   const [particles, setParticles] = useState<{ id: number; left: number; delay: number; size: number; color: string }[]>([]);
 
   useEffect(() => {
@@ -46,16 +65,12 @@ export const CompletionView: React.FC<CompletionViewProps> = ({
     setParticles(generated);
   }, []);
 
-  const getExerciseDisplayName = (key: string | null): string => {
-    if (!key) return '';
-    const map: Record<string, string> = {
-      'hip-hinge': 'Hip Hinge Wall Taps',
-      'bird-dog': 'Bird Dog',
-      'side-plank': 'Side Plank',
-      'dead-bug': 'Dead Bug',
-      'glute-bridge': 'Glute Bridge + Hip Mobility',
-    };
-    return map[key] || key;
+  const handleAllocation = (key: keyof Progression) => {
+    setAllocationError(null);
+    const result = onAllocateProgression(key);
+    if (!result.success) {
+      setAllocationError(result.error || 'Could not allocate this progression second.');
+    }
   };
 
   return (
@@ -120,6 +135,12 @@ export const CompletionView: React.FC<CompletionViewProps> = ({
             </span>
           </div>
 
+          {progressionBonusCoins > 0 && (
+            <p className="completion-coin-bonus">
+              +{progressionBonusCoins} from the extra seconds you completed today
+            </p>
+          )}
+
           <div className="completion-row">
             <span style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-secondary)', fontWeight: '700', fontSize: '0.8rem', letterSpacing: '0.05em' }}>
               <Flame size={16} color="var(--primary)" />
@@ -130,24 +151,58 @@ export const CompletionView: React.FC<CompletionViewProps> = ({
             </span>
           </div>
 
-          {exerciseIncremented && (
-            <div style={{ borderTop: '1px solid rgba(255,255,255,0.03)', paddingTop: '12px', marginTop: '4px', textAlign: 'left' }}>
-              <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.75rem', fontWeight: '800', color: 'var(--primary)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '4px' }}>
-                <Activity size={12} />
-                MICRO-PROGRESSION CALIBRATED
-              </span>
-              <p style={{ fontSize: '0.85rem', color: 'var(--text-primary)', lineHeight: '1.3' }}>
-                <strong>{getExerciseDisplayName(exerciseIncremented)}</strong> extended by <strong>+1 second</strong> for your next session.
-              </p>
-            </div>
-          )}
         </div>
 
+        {canAllocateProgression && (
+          <section className="progression-allocation" aria-labelledby="progression-heading">
+            <div className="progression-allocation-heading">
+              <Activity size={18} />
+              <div>
+                <h2 id="progression-heading">Choose Your +1 Second</h2>
+                <p>Add it to your next workout. Complete that extra second to earn one extra coin.</p>
+              </div>
+            </div>
+
+            <div className="progression-options">
+              {EXERCISE_KEYS.map((key) => {
+                const isAtCap = progression[key] >= 30;
+                return (
+                  <button
+                    key={key}
+                    type="button"
+                    className="progression-option"
+                    onClick={() => handleAllocation(key)}
+                    disabled={isAtCap}
+                    aria-label={`Add one second to ${EXERCISE_NAMES[key]}`}
+                  >
+                    <span>
+                      <strong>{EXERCISE_NAMES[key]}</strong>
+                      <small>{isAtCap ? 'MAX +30S' : `CURRENT +${progression[key]}S`}</small>
+                    </span>
+                    <Plus size={20} aria-hidden="true" />
+                  </button>
+                );
+              })}
+            </div>
+
+            {allocationError && <p className="progression-error" role="alert">{allocationError}</p>}
+          </section>
+        )}
+
+        {exerciseIncremented && (
+          <div className="progression-confirmed" role="status">
+            <Check size={18} />
+            <p><strong>{EXERCISE_NAMES[exerciseIncremented]}</strong> gets +1 second next workout.</p>
+          </div>
+        )}
+
         {/* Back Button */}
-        <button className="btn btn-primary" onClick={onReturnHome} style={{ gap: '10px', marginTop: '5px' }}>
-          <span>RETURN TO HOME</span>
-          <ArrowRight size={18} />
-        </button>
+        {!canAllocateProgression && (
+          <button className="btn btn-primary" onClick={onReturnHome} style={{ gap: '10px', marginTop: '5px' }}>
+            <span>RETURN TO HOME</span>
+            <ArrowRight size={18} />
+          </button>
+        )}
       </div>
     </div>
   );

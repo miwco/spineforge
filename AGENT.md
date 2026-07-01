@@ -5,7 +5,7 @@ SpineForge is a phone-first, PWA-friendly React/Vite app for a short daily lower
 
 The visual identity is "Forged in the Dark": deep black, industrial steel, molten orange, glowing borders, heavy Oswald headings, compact mobile cards, and a centered 480px max-width app shell on desktop.
 
-The Home view uses `/brand/spineforge-logo.jpeg` as the full-width upper hero. The artwork already contains the SpineForge wordmark, so do not add a second `SPINEFORGE` heading over or below it. Only the user's active title is overlaid near the bottom of the hero.
+The Home view uses `/brand/spineforge-logo.jpeg` as the full-width upper hero. The artwork already contains the SpineForge wordmark, so do not add a second `SPINEFORGE` heading over or below it. Only the user's active title is overlaid near the bottom of the hero. The workout start card is the first item below the hero; streak repair follows the main status content, and the optional rest-day purchase stays lowest in the hierarchy. The five-tab bottom navigation is fixed to the phone viewport.
 
 ## Tech Stack
 - Framework: React 19 + Vite
@@ -72,9 +72,9 @@ Alternative routines:
 Progression lives in `state.progression` in `src/hooks/useAppState.ts`.
 
 Current rules:
-- First completion of a local calendar day awards progression.
-- Each completed day adds +1 second to one exercise for the next workout.
-- Rotation order is `hip-hinge`, `bird-dog`, `side-plank`, `dead-bug`, `glute-bridge`.
+- The first completion of a local calendar day creates one pending progression point.
+- On the completion screen, the user chooses which exercise receives +1 second for the next workout.
+- `pendingProgression` persists the unallocated point and reward summary in `spineforge_state`; if the PWA closes before selection, it reopens on the completion screen.
 - Each exercise progression is capped at +30 seconds.
 - Side plank progression is split between left and right sides.
 - Home and Stats show total daily target as 300 base seconds plus total progression seconds. This does not include the initial 8-second get-ready step or transition rests.
@@ -90,6 +90,7 @@ Important fields:
 - `lastWorkoutDate`
 - `lastRepairDate`
 - `progression`
+- `pendingProgression`
 - `unlockedCosmetics`
 - `activeTheme`
 - `activeSoundPack`
@@ -100,7 +101,7 @@ Important fields:
 
 Current economy:
 - New users start with 20 coins.
-- First workout completion per local date gives 10 coins.
+- First workout completion per local date gives 10 base coins plus 1 coin for every progression second actually completed in that workout.
 - Every 7-day streak milestone gives a bonus: 50 coins at day 7, then +10 more for each later week.
 - Streak repair costs 150 coins.
 - Streak saver/rest day costs 200 coins.
@@ -201,7 +202,7 @@ Before pushing deployable changes, run:
 - `npm run lint` when relevant
 
 Service worker warning:
-- `public/sw.js` uses a cache-first strategy for same-origin GET requests and a manual cache name (`spineforge-cache-v1`). If production users report stale deploys, review service worker update/cache behavior.
+- `public/sw.js` uses a cache-first strategy for same-origin GET requests and a manual cache name (`spineforge-cache-v5`). Bump this cache name for every user-facing deployment so installed PWAs activate the new shell and remove old caches.
 
 ## Known Fragile Areas
 - README was previously the default Vite README; keep it product-specific.
@@ -215,7 +216,7 @@ Service worker warning:
 
 ## Safe Change Guidance
 - Keep changes scoped. This project deploys from GitHub to Vercel.
-- Prefer adding tests around `calculateStreak`, repair cooldown, progression rotation, and once-per-day rewards before changing state logic.
+- Prefer adding tests around `calculateStreak`, repair cooldown, manual progression allocation, progression bonus coins, and once-per-day rewards before changing state logic.
 - If changing persistence, add a migration plan and preserve existing `spineforge_state` users.
 - If adding new shop item types, make sure the purchase, equip, display, and runtime behavior all exist.
 - If changing media paths or names, update `src/utils/assets.ts` and README references together.

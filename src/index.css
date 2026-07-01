@@ -140,7 +140,7 @@ body {
   box-shadow: var(--shadow-lg);
   border-left: 2px solid rgba(255, 255, 255, 0.02);
   border-right: 2px solid rgba(255, 255, 255, 0.02);
-  padding-bottom: 84px; /* Space for nav */
+  padding-bottom: calc(72px + env(safe-area-inset-bottom));
 }
 
 /* Volumetric light overlay background simulation */
@@ -263,6 +263,44 @@ p {
   backdrop-filter: blur(10px);
 }
 
+.home-start-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  margin-top: -0.5rem;
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.home-start-card p {
+  max-width: 320px;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.home-session-length {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.5rem 1rem;
+  background: #08090d;
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  border-radius: var(--radius-sm);
+}
+
+.home-session-length span {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.home-session-length strong {
+  color: var(--primary);
+  font-family: var(--font-heading);
+  font-size: 0.9rem;
+}
+
 .install-card {
   z-index: 3;
   margin: 1rem 1.25rem 0;
@@ -321,11 +359,14 @@ p {
 
 /* Bottom Navigation */
 .bottom-nav {
-  position: absolute;
+  position: fixed;
   bottom: 0;
-  left: 0;
-  right: 0;
-  height: 72px;
+  left: 50%;
+  width: 100%;
+  max-width: 480px;
+  height: calc(72px + env(safe-area-inset-bottom));
+  padding-bottom: env(safe-area-inset-bottom);
+  transform: translateX(-50%);
   background-color: rgba(15, 17, 21, 0.95);
   border-top: 2px solid rgba(255, 255, 255, 0.03);
   display: flex;
@@ -820,7 +861,7 @@ p {
 .completion-content {
   z-index: 10;
   width: 100%;
-  max-width: 350px;
+  max-width: 400px;
   min-height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 2.25rem);
   display: flex;
   flex-direction: column;
@@ -866,6 +907,131 @@ p {
   justify-content: space-between;
   align-items: center;
   gap: 0.75rem;
+}
+
+.completion-coin-bonus {
+  margin-top: -0.35rem;
+  color: var(--primary-hover);
+  font-size: 0.74rem;
+  font-weight: 700;
+  text-align: right;
+}
+
+.progression-allocation {
+  width: 100%;
+  padding: 1rem;
+  background: rgba(12, 14, 18, 0.92);
+  border: 1px solid rgba(243, 112, 33, 0.24);
+  border-left: 3px solid var(--primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  text-align: left;
+}
+
+.progression-allocation-heading {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  margin-bottom: 0.8rem;
+  color: var(--primary);
+}
+
+.progression-allocation-heading svg {
+  flex: 0 0 auto;
+  margin-top: 0.15rem;
+}
+
+.progression-allocation-heading h2 {
+  font-size: 1rem;
+}
+
+.progression-allocation-heading p {
+  margin-top: 0.15rem;
+  font-size: 0.76rem;
+  line-height: 1.3;
+}
+
+.progression-options {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.progression-option {
+  width: 100%;
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.65rem 0.75rem;
+  color: var(--text-primary);
+  background: #07080a;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  text-align: left;
+}
+
+.progression-option > span {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.progression-option strong {
+  font-family: var(--font-heading);
+  font-size: 0.82rem;
+  text-transform: uppercase;
+}
+
+.progression-option small {
+  color: var(--text-muted);
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+.progression-option svg {
+  flex: 0 0 auto;
+  color: var(--primary);
+}
+
+.progression-option:active:not(:disabled) {
+  border-color: var(--primary);
+  background: rgba(243, 112, 33, 0.09);
+}
+
+.progression-option:disabled {
+  cursor: not-allowed;
+  opacity: 0.42;
+}
+
+.progression-error {
+  margin-top: 0.65rem;
+  color: #ff6b4a;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.progression-confirmed {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.85rem 1rem;
+  color: var(--primary);
+  background: rgba(243, 112, 33, 0.08);
+  border: 1px solid rgba(243, 112, 33, 0.28);
+  border-radius: var(--radius-sm);
+  text-align: left;
+}
+
+.progression-confirmed svg {
+  flex: 0 0 auto;
+}
+
+.progression-confirmed p {
+  color: var(--text-primary);
+  font-size: 0.82rem;
 }
 
 @media (max-height: 720px) {

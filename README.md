@@ -11,7 +11,7 @@ The app is built for the small daily habit: open it, press start, follow the tim
 - Uses 10-second transition periods so the user can prepare for the next movement.
 - Plays synthesized beep cues and uses device vibration where supported.
 - Tracks completed days, current streak, longest streak, coins, and progression.
-- Adds gentle +1 second micro-progression after each completed day.
+- Lets the user assign a gentle +1 second micro-progression after each completed day.
 - Includes a shop for themes, sound packs, titles, badges, animations, routines, and relic-style rewards.
 - Stores all user data locally in the browser for now.
 
@@ -44,10 +44,11 @@ The app uses square exercise images in the workout player and demo videos in the
 
 ## Progression
 
-SpineForge uses gentle automatic micro-progression:
+SpineForge uses gentle, user-directed micro-progression:
 
 - Each first completed workout of the day adds +1 second to one exercise for the next session.
-- The app rotates which exercise receives the extra second.
+- The completion screen lets the user choose which exercise receives the extra second.
+- An unallocated point is saved locally, so closing the PWA does not lose it.
 - Each exercise is capped at +30 seconds.
 - Side plank progression is split across left and right sides.
 - The Home and Stats views show the current daily target time.
@@ -58,7 +59,8 @@ Completing workouts earns coins and protects the user's streak.
 
 Current economy:
 
-- 10 coins for the first workout completion of a day.
+- 10 base coins for the first workout completion of a day.
+- 1 additional coin for every progression second completed during that workout.
 - 7-day streak milestone bonus starts at 50 coins.
 - Later 7-day milestones scale upward by +10 coins each week.
 - Streak repair costs 150 coins.
@@ -173,6 +175,6 @@ SpineForge uses a "Forged in the Dark" identity: black steel, molten orange, hea
 
 - Separate real workout dates from repaired/rest-saver dates for cleaner stats.
 - Move active routine selection into the main app state.
-- Add tests for streak calculation, repair cooldowns, progression rotation, and once-per-day rewards.
+- Add tests for streak calculation, repair cooldowns, manual progression allocation, progression bonus coins, and once-per-day rewards.
 - Finish mismatched shop items whose runtime behavior is incomplete.
 - Improve service worker cache update behavior if production users see stale deploys.

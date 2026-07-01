@@ -8,6 +8,13 @@ export interface Progression {
   'glute-bridge': number; // 0 to 30
 }
 
+export interface PendingProgression {
+  date: string;
+  coinsEarned: number;
+  progressionBonusCoins: number;
+  newStreak: number;
+}
+
 export interface AppState {
   completedDates: string[]; // ['YYYY-MM-DD']
   streakCurrent: number;
@@ -16,6 +23,7 @@ export interface AppState {
   lastWorkoutDate: string | null;
   lastRepairDate: string | null; // Track max 1 repair per 7 days
   progression: Progression;
+  pendingProgression: PendingProgression | null;
   unlockedCosmetics: string[]; // ['theme-retro', 'sound-zen', etc.]
   activeTheme: string;
   activeSoundPack: string;
@@ -39,6 +47,7 @@ const DEFAULT_STATE: AppState = {
     'dead-bug': 0,
     'glute-bridge': 0,
   },
+  pendingProgression: null,
   unlockedCosmetics: ['theme-classic-dark', 'sound-8-bit', 'title-spine-initiate', 'badge-none', 'anim-none'],
   activeTheme: 'theme-classic-dark',
   activeSoundPack: '8-bit',
@@ -164,23 +173,8 @@ export const useAppState = () => {
     const newCompletedDates = [...state.completedDates, todayStr];
     const { current: newStreak, longest: newLongest } = calculateStreak(newCompletedDates);
 
-    // Progression logic: rotating which exercise gets +1 second, capped at +30s
-    const newProgression = { ...state.progression };
-    let rotatedKey: keyof Progression | null = null;
-    
-    // Find next key to increment
-    const startIndex = state.completedDates.length % EXERCISE_KEYS.length;
-    for (let i = 0; i < EXERCISE_KEYS.length; i++) {
-      const checkKey = EXERCISE_KEYS[(startIndex + i) % EXERCISE_KEYS.length];
-      if (newProgression[checkKey] < 30) {
-        newProgression[checkKey] += 1;
-        rotatedKey = checkKey;
-        break;
-      }
-    }
-
-    // Coin award logic
-    let coinsEarned = 10; // base reward
+    const progressionBonusCoins = Object.values(state.progression).reduce((sum, seconds) => sum + seconds, 0);
+    let coinsEarned = 10 + progressionBonusCoins;
     
     // New logic: 50 extra coins if you get a 7-day streak, 
     // and 10 more coins every week for every successful 7-day streak.
@@ -197,15 +191,50 @@ export const useAppState = () => {
       streakLongest: Math.max(prev.streakLongest, newLongest),
       coins: prev.coins + coinsEarned,
       lastWorkoutDate: todayStr,
-      progression: newProgression,
+      pendingProgression: EXERCISE_KEYS.some((key) => prev.progression[key] < 30)
+        ? {
+            date: todayStr,
+            coinsEarned,
+            progressionBonusCoins,
+            newStreak,
+          }
+        : null,
     }));
 
     return {
       success: true,
       coinsEarned,
+      progressionBonusCoins,
       newStreak,
-      exerciseIncremented: rotatedKey,
+      canAllocateProgression: EXERCISE_KEYS.some((key) => state.progression[key] < 30),
     };
+  };
+
+  const allocateProgression = (key: keyof Progression): { success: boolean; error?: string } => {
+    if (!state.pendingProgression) {
+      return { success: false, error: 'No progression point is waiting to be allocated.' };
+    }
+    if (!EXERCISE_KEYS.includes(key)) {
+      return { success: false, error: 'Unknown exercise.' };
+    }
+    if (state.progression[key] >= 30) {
+      return { success: false, error: 'This exercise is already at its progression cap.' };
+    }
+
+    setState((prev) => {
+      if (!prev.pendingProgression || prev.progression[key] >= 30) return prev;
+
+      return {
+        ...prev,
+        progression: {
+          ...prev.progression,
+          [key]: prev.progression[key] + 1,
+        },
+        pendingProgression: null,
+      };
+    });
+
+    return { success: true };
   };
 
   const checkStreakRepairAvailable = (): {
@@ -333,6 +362,7 @@ export const useAppState = () => {
   return {
     state,
     completeWorkout,
+    allocateProgression,
     checkStreakRepairAvailable,
     repairStreak,
     buyStreakSaver,

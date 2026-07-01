@@ -72,6 +72,34 @@ export const HomeView: React.FC<HomeViewProps> = ({
         </div>
       </div>
 
+      {/* Main Routine Start Plate */}
+      <div className="glass-card highlight home-start-card">
+        <h2 style={{ fontSize: '1.6rem', fontWeight: '800', letterSpacing: '0.02em', color: isCompletedToday ? 'var(--text-primary)' : 'var(--primary)' }}>
+          {isCompletedToday ? "SPINE FORGED TODAY" : "READY FOR TODAY'S FORGE"}
+        </h2>
+
+        <p>
+          {isCompletedToday
+            ? "Your spinal stabilizers are locked down. Return tomorrow to continue your micro-progression."
+            : "Lock your core, align your pelvis, and invest 5 minutes in spine integrity."
+          }
+        </p>
+
+        <div className="home-session-length">
+          <span>SESSION LENGTH:</span>
+          <strong>{formatWorkoutTime(totalSeconds)}</strong>
+        </div>
+
+        <button
+          onClick={onStartWorkout}
+          className="btn btn-primary"
+          style={{ width: '100%', gap: '10px', fontSize: '1.15rem', padding: '1.1rem' }}
+        >
+          <Play size={20} fill="#ffffff" stroke="none" />
+          <span>{isCompletedToday ? "RE-ACTIVATE WORKOUT" : "BEGIN SPINE FORGE"}</span>
+        </button>
+      </div>
+
       {/* Streak and Forged Coins Plate */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
         <div className="glass-card" style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '14px 18px', borderLeftColor: 'var(--primary)' }}>
@@ -166,34 +194,6 @@ export const HomeView: React.FC<HomeViewProps> = ({
           </button>
         </div>
       )}
-
-      {/* Main Routine Start Plate */}
-      <div className="glass-card highlight" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '2.25rem 1.5rem', textAlign: 'center', gap: '18px' }}>
-        <h2 style={{ fontSize: '1.6rem', fontWeight: '800', letterSpacing: '0.02em', color: isCompletedToday ? 'var(--text-primary)' : 'var(--primary)' }}>
-          {isCompletedToday ? "SPINE FORGED TODAY" : "READY FOR TODAY'S FORGE"}
-        </h2>
-        
-        <p style={{ maxWidth: '320px', fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: '1.4' }}>
-          {isCompletedToday 
-            ? "Your spinal stabilizers are locked down. Return tomorrow to continue your micro-progression."
-            : "Lock your core, align your pelvis, and invest 5 minutes in spine integrity."
-          }
-        </p>
-
-        <div style={{ display: 'flex', gap: '10px', alignItems: 'center', background: '#08090d', padding: '8px 18px', borderRadius: 'var(--radius-sm)', border: '1px solid rgba(255, 255, 255, 0.03)' }}>
-          <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em' }}>SESSION LENGTH:</span>
-          <span style={{ fontSize: '0.9rem', color: 'var(--primary)', fontWeight: '800', fontFamily: 'var(--font-heading)' }}>{formatWorkoutTime(totalSeconds)}</span>
-        </div>
-
-        <button 
-          onClick={onStartWorkout} 
-          className="btn btn-primary"
-          style={{ width: '100%', gap: '10px', fontSize: '1.15rem', padding: '1.1rem' }}
-        >
-          <Play size={20} fill="#ffffff" stroke="none" />
-          <span>{isCompletedToday ? "RE-ACTIVATE WORKOUT" : "BEGIN SPINE FORGE"}</span>
-        </button>
-      </div>
 
     </div>
   );
