@@ -12,7 +12,7 @@ const EXERCISE_NAMES: Record<string, string> = {
   'bird-dog': 'Bird Dog',
   'side-plank': 'Side Plank',
   'dead-bug': 'Dead Bug',
-  'glute-bridge': 'Glute Bridge + Mobility',
+  'glute-bridge': 'Glute Bridge',
 };
 
 const getDaysInMonth = (year: number, month: number) => new Date(year, month + 1, 0).getDate();

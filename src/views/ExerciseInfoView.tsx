@@ -56,13 +56,13 @@ const DEFAULT_EXERCISES: ExerciseDetail[] = [
   },
   {
     id: 'glute-bridge',
-    name: 'Glute Bridge + Hip Mobility',
-    desc: 'Wakes up sleepy glute muscles (the primary protectors of your back) and releases tension in tight hip joints.',
+    name: 'Glute Bridge',
+    desc: 'Strengthens the glutes to support the pelvis and reduce unnecessary strain on the lower back.',
     cues: [
       'Lie on your back, knees bent, feet flat on the floor hip-width apart.',
       'Drive through your heels to lift your hips until knees, hips, and shoulders align.',
       'Squeeze your glutes tightly at the top.',
-      'Add a gentle knee sway left-to-right to mobilize hip sockets.'
+      'Pause briefly, then lower your hips with control.'
     ]
   }
 ];

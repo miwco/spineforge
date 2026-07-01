@@ -1,4 +1,4 @@
-const CACHE_NAME = 'spineforge-cache-v6';
+const CACHE_NAME = 'spineforge-cache-v7';
 
 const cacheResponse = async (request, response) => {
   if (!response || response.status !== 200) {

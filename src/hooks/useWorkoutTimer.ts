@@ -169,15 +169,15 @@ const buildWorkoutQueue = (progression: Progression): WorkoutStep[] => {
       name: 'Transition Rest',
       duration: transitionTime,
       cue: 'Keep lying on back, bend knees for Glute Bridge',
-      nextName: 'Glute Bridge + Hip Mobility'
+      nextName: 'Glute Bridge'
     });
     
-    // 5. Glute bridge + hip mobility
+    // 5. Glute bridge
     queue.push({
       type: 'work',
-      name: 'Glute Bridge + Hip Mobility',
+      name: 'Glute Bridge',
       duration: 60 + (progression['glute-bridge'] || 0),
-      cue: 'Drive feet down, lift hips, engage glutes, rotate knees gently',
+      cue: 'Drive through heels, lift hips, squeeze glutes, then lower with control',
       exerciseId: 'glute-bridge',
       nextName: 'Finished!'
     });

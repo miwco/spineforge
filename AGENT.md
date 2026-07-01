@@ -52,7 +52,7 @@ Default flow:
 8. Transition Rest - 10 seconds, previews Dead Bug
 9. Dead Bug - 60 seconds plus progression
 10. Transition Rest - 10 seconds, previews Glute Bridge
-11. Glute Bridge + Hip Mobility - 60 seconds plus progression
+11. Glute Bridge - 60 seconds plus progression
 
 The workout starts paused on the player screen. Pressing the round play button initializes audio and starts the timer. The timer advances automatically. The UI shows a compact countdown, current exercise/rest label, large media, one-line cue text, and next-up bar. Get-ready/rest/transition states show the next exercise picture as a large square preview. Active work states show the exercise demo video looping muted in a 16:9 frame.
 
@@ -202,7 +202,7 @@ Before pushing deployable changes, run:
 - `npm run lint` when relevant
 
 Service worker warning:
-- `public/sw.js` uses a cache-first strategy for same-origin GET requests and a manual cache name (`spineforge-cache-v6`). Bump this cache name for every user-facing deployment so installed PWAs activate the new shell and remove old caches.
+- `public/sw.js` uses a cache-first strategy for same-origin GET requests and a manual cache name (`spineforge-cache-v7`). Bump this cache name for every user-facing deployment so installed PWAs activate the new shell and remove old caches.
 
 ## Known Fragile Areas
 - README was previously the default Vite README; keep it product-specific.

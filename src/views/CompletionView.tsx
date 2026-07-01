@@ -20,7 +20,7 @@ const EXERCISE_NAMES: Record<keyof Progression, string> = {
   'bird-dog': 'Bird Dog',
   'side-plank': 'Side Plank',
   'dead-bug': 'Dead Bug',
-  'glute-bridge': 'Glute Bridge + Hip Mobility',
+  'glute-bridge': 'Glute Bridge',
 };
 
 const FUN_QUOTES = [
