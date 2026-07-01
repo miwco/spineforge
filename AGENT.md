@@ -5,7 +5,7 @@ SpineForge is a phone-first, PWA-friendly React/Vite app for a short daily lower
 
 The visual identity is "Forged in the Dark": deep black, industrial steel, molten orange, glowing borders, heavy Oswald headings, compact mobile cards, and a centered 480px max-width app shell on desktop.
 
-The Home view uses `/brand/spineforge-logo.jpeg` as the full-width upper hero. The artwork already contains the SpineForge wordmark, so do not add a second `SPINEFORGE` heading over or below it. Only the user's active title is overlaid near the bottom of the hero. The workout start card is the first item below the hero; streak repair follows the main status content, and the optional rest-day purchase stays lowest in the hierarchy. The five-tab bottom navigation is fixed to the phone viewport.
+The Home view uses `/brand/spineforge-logo.jpeg` as the cropped full-width upper hero. Its 5:4 viewport intentionally trims only the atmospheric empty space above and below the square artwork. The artwork already contains the SpineForge wordmark, so do not add a second `SPINEFORGE` heading over or below it. Only the user's active title is overlaid near the bottom of the hero. The compact workout start card is the first item below the hero; streak repair follows the main status content, and the optional rest-day purchase stays lowest in the hierarchy. The five-tab bottom navigation is fixed to the phone viewport.
 
 ## Tech Stack
 - Framework: React 19 + Vite
@@ -202,7 +202,7 @@ Before pushing deployable changes, run:
 - `npm run lint` when relevant
 
 Service worker warning:
-- `public/sw.js` uses a cache-first strategy for same-origin GET requests and a manual cache name (`spineforge-cache-v5`). Bump this cache name for every user-facing deployment so installed PWAs activate the new shell and remove old caches.
+- `public/sw.js` uses a cache-first strategy for same-origin GET requests and a manual cache name (`spineforge-cache-v6`). Bump this cache name for every user-facing deployment so installed PWAs activate the new shell and remove old caches.
 
 ## Known Fragile Areas
 - README was previously the default Vite README; keep it product-specific.

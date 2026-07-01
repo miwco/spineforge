@@ -57,7 +57,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
   };
 
   return (
-    <div className="fade-in scroll-container">
+    <div className="fade-in scroll-container home-view">
       {/* Cinematic Logo Header */}
       <div className="brand-hero">
         <img
@@ -74,28 +74,19 @@ export const HomeView: React.FC<HomeViewProps> = ({
 
       {/* Main Routine Start Plate */}
       <div className="glass-card highlight home-start-card">
-        <h2 style={{ fontSize: '1.6rem', fontWeight: '800', letterSpacing: '0.02em', color: isCompletedToday ? 'var(--text-primary)' : 'var(--primary)' }}>
-          {isCompletedToday ? "SPINE FORGED TODAY" : "READY FOR TODAY'S FORGE"}
-        </h2>
-
-        <p>
-          {isCompletedToday
-            ? "Your spinal stabilizers are locked down. Return tomorrow to continue your micro-progression."
-            : "Lock your core, align your pelvis, and invest 5 minutes in spine integrity."
-          }
-        </p>
-
-        <div className="home-session-length">
-          <span>SESSION LENGTH:</span>
-          <strong>{formatWorkoutTime(totalSeconds)}</strong>
+        <div className="home-start-heading">
+          <div>
+            <span className="home-start-kicker">DAILY BACK ROUTINE</span>
+            <h2>{isCompletedToday ? "FORGED TODAY" : "READY TO FORGE"}</h2>
+          </div>
+          <strong className="home-start-duration">{formatWorkoutTime(totalSeconds)}</strong>
         </div>
 
         <button
           onClick={onStartWorkout}
-          className="btn btn-primary"
-          style={{ width: '100%', gap: '10px', fontSize: '1.15rem', padding: '1.1rem' }}
+          className="btn btn-primary home-start-button"
         >
-          <Play size={20} fill="#ffffff" stroke="none" />
+          <span className="home-start-play"><Play size={21} fill="currentColor" /></span>
           <span>{isCompletedToday ? "RE-ACTIVATE WORKOUT" : "BEGIN SPINE FORGE"}</span>
         </button>
       </div>
