@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Flame, Coins, Play, AlertTriangle, Shield } from 'lucide-react';
 import { getLocalDateString } from '../hooks/useAppState';
 import type { AppState } from '../hooks/useAppState';
-import { ForgeLogo } from '../components/ForgeLogo';
 
 interface HomeViewProps {
   state: AppState;
@@ -61,20 +60,15 @@ export const HomeView: React.FC<HomeViewProps> = ({
     <div className="fade-in scroll-container">
       {/* Cinematic Logo Header */}
       <div className="brand-hero">
-        <div className="brand-hero-backdrop" />
-        <ForgeLogo size={118} className="brand-hero-logo" />
-        <h1 className="brand-title">
-          SPINEFORGE
-        </h1>
+        <img
+          className="brand-hero-image"
+          src="/brand/spineforge-logo.jpeg"
+          alt="SpineForge"
+        />
         <div className="brand-title-row">
-          <span className="title-pill equipped" style={{ marginTop: '6px', fontSize: '0.75rem', padding: '4px 14px' }}>
+          <span className="title-pill equipped brand-user-title">
             {state.activeTitle}
           </span>
-          {state.activeBadge !== 'badge-none' && (
-            <span className="title-pill equipped" style={{ marginTop: '6px', fontSize: '0.75rem', padding: '4px 14px', background: 'linear-gradient(90deg, #d35400, #f37021)' }}>
-              {state.activeBadge.replace('badge-', '').toUpperCase().replace('-', ' ')}
-            </span>
-          )}
         </div>
       </div>
 

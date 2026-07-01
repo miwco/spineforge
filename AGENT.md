@@ -5,6 +5,8 @@ SpineForge is a phone-first, PWA-friendly React/Vite app for a short daily lower
 
 The visual identity is "Forged in the Dark": deep black, industrial steel, molten orange, glowing borders, heavy Oswald headings, compact mobile cards, and a centered 480px max-width app shell on desktop.
 
+The Home view uses `/brand/spineforge-logo.jpeg` as the full-width upper hero. The artwork already contains the SpineForge wordmark, so do not add a second `SPINEFORGE` heading over or below it. Only the user's active title is overlaid near the bottom of the hero.
+
 ## Tech Stack
 - Framework: React 19 + Vite
 - Language: TypeScript
@@ -34,6 +36,7 @@ Commands:
 - `src/utils/audioSynth.ts` - Web Audio beep/sound-pack synthesis
 - `public/images/` - 1:1 exercise images used by workout/library
 - `public/video/` - 16:9 exercise demo videos used by the library
+- `public/spineforge-icon-192-v2.png`, `public/spineforge-icon-512-v2.png`, and `public/spineforge-apple-touch-icon-v2.png` - PWA icons generated from the canonical JPEG badge
 
 ## Current Workout Logic
 The default routine is built in `buildWorkoutQueue` inside `src/hooks/useWorkoutTimer.ts`.
